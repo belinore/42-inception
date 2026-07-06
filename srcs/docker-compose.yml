@@ -55,18 +55,16 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      # Final 42 VM path:
-      # device: /home/belinore/data/mariadb
-      device: /Users/beth/in_progress/inception/data/mariadb
+      device: /home/belinore/data/mariadb
+      #device: /Users/beth/in_progress/inception/data/mariadb
 
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      # Final 42 VM path:
-      # device: /home/belinore/data/wordpress
-      device: /Users/beth/in_progress/inception/data/wordpress
+      device: /home/belinore/data/wordpress
+      #device: /Users/beth/in_progress/inception/data/wordpress
 
 networks:
   inception:

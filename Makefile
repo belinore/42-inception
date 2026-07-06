@@ -1,7 +1,7 @@
 COMPOSE_FILE = srcs/docker-compose.yml
 # Final 42 VM path:
-# DATA_DIR = /home/belinore/data
-DATA_DIR = /Users/beth/in_progress/inception/data
+DATA_DIR = /home/belinore/data
+#DATA_DIR = /Users/beth/in_progress/inception/data
 COMPOSE = docker compose -f $(COMPOSE_FILE)
 
 all: up
