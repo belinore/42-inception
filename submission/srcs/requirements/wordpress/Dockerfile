@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/www/html /run/php \
-	&& curl -fsSL https://wordpress.org/latest.tar.gz -o /tmp/wordpress.tar.gz \
+	&& curl -fsSL https://wordpress.org/wordpress-7.0.1.tar.gz -o /tmp/wordpress.tar.gz \
 	&& tar -xzf /tmp/wordpress.tar.gz -C /tmp \
 	&& cp -a /tmp/wordpress/. /var/www/html/ \
 	&& chown -R www-data:www-data /var/www/html /run/php \

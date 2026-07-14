@@ -27,10 +27,10 @@ clean:
 
 fclean:
 	$(COMPOSE) down -v
-	rm -f secrets/MARIADB_PASSWORD secrets/MARIADB_ROOT_PASSWORD secrets/WP_ADMIN_PASSWORD secrets/WP_USER_PASSWORD
-	rm -f secrets/TLS_PRIVATE_KEY secrets/SSL_CERTIFICATE
 
 fclean_data: fclean
+	rm -f secrets/MARIADB_PASSWORD secrets/MARIADB_ROOT_PASSWORD secrets/WP_ADMIN_PASSWORD secrets/WP_USER_PASSWORD
+	rm -f secrets/TLS_PRIVATE_KEY secrets/SSL_CERTIFICATE
 	sudo rm -rf $(DATA_DIR)/mariadb $(DATA_DIR)/wordpress
 
 .PHONY: all setup up down build ps logs clean fclean fclean_data

@@ -43,7 +43,6 @@ srcs/
     wordpress/
       Dockerfile
       conf/www.conf
-      conf/wp-config.php
       tools/init.sh
 ```
 
@@ -137,7 +136,7 @@ From the repository root:
 make
 ```
 
-This creates the required data directories, generate secrets, builds the images, and starts the stack.
+This creates the required data directories, generates secrets, builds the images, and starts the stack.
 
 ### Stop
 

@@ -73,6 +73,8 @@ printf '%s' 'choose_a_wp_admin_password' > secrets/WP_ADMIN_PASSWORD
 printf '%s' 'choose_a_wp_author_password' > secrets/WP_USER_PASSWORD
 ```
 
+For an existing installation, changing these files alone may not update the stored MariaDB or WordPress credentials. Use `make fclean_data` for a fresh install with new passwords.
+
 ## Stopping The Project
 
 Stop the containers:
@@ -83,7 +85,7 @@ make down
 
 This keeps the persistent WordPress files and database data.
 
-To stop the project and delete the Docker volumes:
+To stop the project and delete the Docker volumes while keeping local data and secrets:
 
 ```sh
 make fclean
@@ -149,4 +151,4 @@ MariaDB data is stored in:
 /home/belinore/data/mariadb
 ```
 
-Removing containers does not remove this data. The data is removed only when the volumes and local data directories are deleted.
+Removing containers or Compose volumes does not remove this data. Use `make fclean_data` to delete the local data directories.
