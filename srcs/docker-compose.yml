@@ -56,7 +56,6 @@ volumes:
       type: none
       o: bind
       device: /home/belinore/data/mariadb
-      #device: /Users/beth/in_progress/inception/data/mariadb
 
   wordpress_data:
     driver: local
@@ -64,7 +63,6 @@ volumes:
       type: none
       o: bind
       device: /home/belinore/data/wordpress
-      #device: /Users/beth/in_progress/inception/data/wordpress
 
 networks:
   inception:

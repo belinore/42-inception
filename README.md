@@ -38,10 +38,11 @@ srcs/
     nginx/
       Dockerfile
       conf/default.conf
+    tools/
+      setup.sh
     wordpress/
       Dockerfile
       conf/www.conf
-      conf/wp-config.php
       tools/init.sh
 ```
 
@@ -58,9 +59,9 @@ The project creates two persistent storage areas:
 - `/home/belinore/data/mariadb` for the database
 - `/home/belinore/data/wordpress` for WordPress files
 
-Passwords and TLS material are provided through Docker secrets from local files in `secrets/`. These files are ignored by git.
+Passwords and TLS keys are provided through Docker secrets from local files in `secrets/`. These files are ignored by git.
 
-## Main Design Choices
+## Design
 
 Each service has its own container and Dockerfile. This keeps service responsibilities clear:
 
@@ -90,13 +91,13 @@ Environment variables are convenient for non-sensitive configuration such as ser
 
 Secrets are better for passwords, private keys, and certificates because they are mounted as files at runtime and can be kept out of Dockerfiles, Compose variables, and git history.
 
-This project uses `.env` for non-secret settings and `secrets/` files for passwords and TLS material.
+This project uses `.env` for non-secret settings and `secrets/` files for passwords and TLS keys.
 
 ### Docker Network vs Host Network
 
 With a Docker bridge network, containers can communicate by service name while remaining isolated from the host network. This lets WordPress connect to `mariadb:3306` and nginx connect to `wordpress:9000`.
 
-Host networking would remove that isolation and expose more of the stack directly to the host. It is also forbidden by the project requirements.
+Host networking would remove that isolation and expose more of the stack directly to the host.
 
 This project uses a dedicated Docker network named `inception`.
 
@@ -106,7 +107,7 @@ Docker volumes provide managed persistent storage for container data. They survi
 
 Bind mounts map a specific host path directly into a container. They are useful for development, but they couple the container strongly to the host filesystem layout.
 
-This project uses named Docker volumes configured to store their data under `/home/belinore/data`, satisfying the subject requirement while keeping persistence explicit.
+This project uses named Docker volumes configured to store their data under `/home/belinore/data`.
 
 ## Instructions
 
@@ -125,41 +126,17 @@ The domain `belinore.42.fr` must point to the VM or local machine. For local VM 
 ```text
 127.0.0.1 belinore.42.fr
 ```
-
-If accessing the VM from another host, use the VM IP instead of `127.0.0.1`.
-
-### Required Secret Files
-
-Create the local secrets directory:
-
-```sh
-mkdir -p secrets
-```
-
-Create password files:
-
-```sh
-printf '%s' 'choose_a_root_db_password' > secrets/MARIADB_ROOT_PASSWORD
-printf '%s' 'choose_a_wp_db_password' > secrets/MARIADB_PASSWORD
-printf '%s' 'choose_a_wp_admin_password' > secrets/WP_ADMIN_PASSWORD
-printf '%s' 'choose_a_wp_author_password' > secrets/WP_USER_PASSWORD
-```
-
-Create TLS files:
-
-```sh
-make cert
-```
+Where IP matches that of localhost.
 
 ### Build And Start
 
 From the repository root:
 
 ```sh
-make up
+make
 ```
 
-This creates the required data directories, builds the images, and starts the stack.
+This creates the required data directories, generates secrets, builds the images, and starts the stack.
 
 ### Stop
 
@@ -179,7 +156,15 @@ make clean
 make fclean
 ```
 
-This stops the stack, removes Compose volumes, and deletes the configured persistent data directories.
+This stops the stack, removes Compose volumes.
+
+### FULL Full Clean
+
+```sh
+make fclean_data
+```
+
+This also deletes the local data directories.
 
 ### Check The Stack
 
@@ -201,28 +186,18 @@ Expected response:
 HTTP/1.1 200 OK
 ```
 
-If `/etc/hosts` is not configured yet:
-
-```sh
-curl -k -I --resolve belinore.42.fr:443:127.0.0.1 https://belinore.42.fr
-```
-
 ## Additional Documentation
 
 More detailed documentation is available in:
 
 - `USER_DOC.md`: user and administrator guide
 - `DEV_DOC.md`: developer setup, architecture, and validation notes
-- `PROJECT_CONTEXT.md`: working project context and learning notes
 
 ## Resources
 
-Classic references used for this project:
+References used for this project:
 
 - Docker documentation: https://docs.docker.com/
-- Docker Compose documentation: https://docs.docker.com/compose/
-- Docker storage documentation: https://docs.docker.com/engine/storage/
-- Docker secrets documentation: https://docs.docker.com/compose/how-tos/use-secrets/
 - nginx documentation: https://nginx.org/en/docs/
 - MariaDB documentation: https://mariadb.com/kb/en/documentation/
 - WordPress developer documentation: https://developer.wordpress.org/
@@ -230,11 +205,9 @@ Classic references used for this project:
 - WP-CLI documentation: https://wp-cli.org/
 - OpenSSL documentation: https://www.openssl.org/docs/
 
-AI assistance was used as a learning and implementation aid for:
-
+AI assistance was used as a learning tool for:
 - comparing architecture options and Docker concepts
 - explaining MariaDB, nginx, WordPress, TLS, secrets, and Compose syntax
 - reviewing Dockerfiles, init scripts, Compose configuration, and Makefile targets
 - debugging local container startup and validation commands
 - drafting project documentation
-
